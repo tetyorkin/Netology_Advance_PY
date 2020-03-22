@@ -2,7 +2,6 @@ from application.salary import *
 from application.db.people import *
 from datetime import *
 
-
 if __name__ == '__main__':
     # Задание 1 и 2
     calculate_salary()
