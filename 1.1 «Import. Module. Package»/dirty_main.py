@@ -1,6 +1,6 @@
 from application.salary import *
 from application.db.people import *
-import datetime as dt
+from datetime import *
 
 
 if __name__ == '__main__':
@@ -8,5 +8,5 @@ if __name__ == '__main__':
     calculate_salary()
     get_employees()
     # Задание 3
-    print(f'{dt.datetime.today():%Y-%B-%d}')
-    print(dt.datetime.now().strftime('%Y-%B-%d'))
+    print(f'{datetime.today():%Y-%B-%d}')
+    print(datetime.now().strftime('%Y-%B-%d'))
