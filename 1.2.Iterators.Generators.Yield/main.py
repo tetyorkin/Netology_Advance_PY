@@ -18,15 +18,16 @@ class Country:
             country_str = json.loads(file_content)
             for country in country_str:
                 country_name = country['name']['common']
-                translations = country['translations']['rus']['common']
-                # ссылка формируется в ASCII, чтобы она была кликабельна
-                url_rus = f"https://ru.wikipedia.org/wiki/{quote(translations)}"
+                translations_raw = country['translations']['rus']['common']
+                translations = translations_raw.replace(' ', '_')
+                url_rus = f"https://ru.wikipedia.org/wiki/{translations}"
                 list_country.append(f'{country_name} - {url_rus}')
         except json.decoder.JSONDecodeError:
             raise StopIteration
         return list_country
 
 
+# Функция записи полученных данных в файл
 def write_file(data_in):
     with open('countries_url.txt', 'w', encoding='utf-8') as file:
         data_raw = ',  '.join(data_in)
