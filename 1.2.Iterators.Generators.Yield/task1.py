@@ -1,4 +1,5 @@
 import json
+import urllib.parse
 
 
 class Country:
@@ -19,7 +20,7 @@ class Country:
                 country_name = country['name']['common']
                 translations_raw = country['translations']['rus']['common']
                 translations = translations_raw.replace(' ', '_')
-                url_rus = f"https://ru.wikipedia.org/wiki/{translations}"
+                url_rus = f"https://ru.wikipedia.org/wiki/{urllib.parse.unquote(translations)}"
                 list_country.append(f'{country_name} - {url_rus}')
         except json.decoder.JSONDecodeError:
             raise StopIteration
