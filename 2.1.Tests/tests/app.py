@@ -1,6 +1,19 @@
 # Домашнее задание к лекции 2.1 «Функции — использование встроенных и создание собственных»
-import os
 import json
+import os
+
+directories, documents = {}, []
+
+
+def update_date():
+    current_path = str(os.path.dirname(os.path.abspath(__file__)))
+    path_directories = os.path.join(current_path, '../fixtures/directories.json')
+    path_documents = os.path.join(current_path, '../fixtures/documents.json')
+    with open(path_directories, 'r') as out_dirs:
+        directories = json.load(out_dirs)
+    with open(path_documents, 'r') as out_docs:
+        documents = json.load(out_docs)
+    return directories, documents
 
 
 def check_document_existance(user_doc_number):
@@ -116,7 +129,7 @@ def add_new_doc():
 def secretary_program_start():
     """
     ap - (all people) - команда, которая выводит список всех владельцев документов
-    p – (people) – команда, котораaя спросит номер документа и выведет имя человека, которому он принадлежит;
+    p – (people) – команда, которая спросит номер документа и выведет имя человека, которому он принадлежит;
     l – (list) – команда, которая выведет список всех документов в формате passport "2207 876234" "Василий Гупкин";
     s – (shelf) – команда, которая спросит номер документа и выведет номер полки, на которой он находится;
     a – (add) – команда, которая добавит новый документ в каталог и в перечень полок, спросив его номер, тип,
@@ -127,9 +140,11 @@ def secretary_program_start():
     q - (quit) - команда, которая завершает выполнение программы
     """
     print(
-        'Вас приветствует программа помощник!\n',
+        'Вас приветствует программа помошник!\n',
         '(Введите help, для просмотра списка поддерживаемых команд)\n'
     )
+    global directories, documents
+    directories, documents = update_date()
     while True:
         user_command = input('Введите команду - ')
         if user_command == 'p':
@@ -164,14 +179,4 @@ def secretary_program_start():
 
 
 if __name__ == '__main__':
-    current_path = str(os.path.dirname(os.path.abspath(__file__)))
-    f_directories = os.path.join(current_path, 'fixtures/directories.json')
-    f_documents = os.path.join(current_path, 'fixtures/documents.json')
-    print(f_documents)
-    print(f_directories)
-    with open(f_documents, 'r', encoding='utf-8') as out_docs:
-        documents = json.load(out_docs)
-    with open(f_directories, 'r', encoding='utf-8') as out_dirs:
-        directories = json.load(out_dirs)
-
     secretary_program_start()
