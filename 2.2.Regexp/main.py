@@ -11,10 +11,13 @@ with open("phonebook_raw.csv", encoding='utf-8') as f:
 
 # TODO 1: выполните пункты 1-3 ДЗ
 def phone(contact_list):
-    last_name = re.compile(r"\['(?P<last_name>\w+)", re.M)
+    last_name = re.compile(r"\['(?P<last_name>\w+)(',\n\s+'|\s|'.\s')(?P<fist_name>firs\w+|[А-я]+)(',\n\s+'|\s|'.\s')"
+                           r"(?P<surname>sur\w+|[А-я]+|)(',\n\s+'',\n\s+'',\n\s+'|',\s'', '', '|', '', '|',\n\s+')"
+                           r"(?P<organization>\w+|)(',\n\s+'|)(?P<position>pos\w+|\w+.+\n\s+.+)", re.M)
     list_last_name = []
     for match in last_name.finditer(str(contact_list)):
-        list_last_name += [match.group('last_name')]
+        list_last_name += [match.group('last_name'), match.group('fist_name'), match.group('surname'),
+                           match.group('organization'), match.group('position')]
     print(list_last_name)
 
 
