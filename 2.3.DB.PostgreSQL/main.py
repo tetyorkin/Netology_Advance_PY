@@ -56,7 +56,8 @@ def get_students(course_id):
                 SELECT name 
                 FROM Student
                 INNER JOIN Course_name
-                ON course_name.id=%s;
+                ON student.id=course_name.student_id
+                WHERE course_name.course_id=%s;
             """, course_id)
     print(cur.fetchall())
 
@@ -116,7 +117,6 @@ def delete_db():
 
 
 if __name__ == '__main__':
-    delete_db()
     create_db()
     add_student(student_1)
     add_student(student_2)
