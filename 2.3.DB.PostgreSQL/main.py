@@ -39,10 +39,10 @@ def add_students(course_id, students):
         conn.commit()
 
         cur.execute("""
-                        SELECT name
-                        FROM Student
-                        WHERE name=%s;
-                """, (name,))
+                SELECT name
+                FROM Student
+                WHERE name=%s;
+        """, (name,))
         course_name = f'Курс с id - {course_id}'
         fetch = cur.fetchall()
         print((course_id, course_name, fetch[0]))
@@ -114,7 +114,6 @@ def delete_db():
 
 
 if __name__ == '__main__':
-    delete_db()
     create_db()
     add_student(student_1)
     add_student(student_2)
