@@ -19,6 +19,11 @@ list_student = [
 
 # Функция добавяет список студентов в таблицу Student и записывает их на id курса
 def add_students(course_id, students):
+    cur.execute("""
+            INSERT INTO Course
+            VALUES (default, %s);
+    """, (course_id))
+    conn.commit()
     for student in students:
         name = student['name']
         gpa = student['gpa']
@@ -30,36 +35,28 @@ def add_students(course_id, students):
         conn.commit()
 
         cur.execute("""
-                CREATE TABLE if not exists Course_name(
-                id serial not null,
-                name_course varchar(100),
-                student_name varchar(100) not null
-                );
-        """)
-        conn.commit()
-
-        cur.execute("""
-                SELECT name
+                SELECT id
                 FROM Student
                 WHERE name=%s;
         """, (name,))
-        course_name = f'Курс с id - {course_id}'
         fetch = cur.fetchall()
-        print((course_id, course_name, fetch[0]))
+
         cur.execute("""
                 INSERT INTO Course_name
-                VALUES (%s, %s,  %s);
-        """, (course_id, course_name, fetch[0]))
+                VALUES (default, %s, %s);
+        """, (fetch[0], course_id))
 
         conn.commit()
+
 
 
 # Функция возвращает именя студентов учащихся на конкретном id курса
 def get_students(course_id):
     cur.execute("""
-                SELECT student_name 
-                FROM Course_name
-                WHERE id=%s;
+                SELECT name 
+                FROM Student
+                INNER JOIN Course_name
+                ON course_name.id=%s;
             """, course_id)
     print(cur.fetchall())
 
@@ -98,6 +95,11 @@ def create_db():
         CREATE TABLE if not exists Course(
         id serial PRIMARY KEY not null,
         name varchar(100) not null
+        );        
+        CREATE TABLE if not exists Course_name(
+        id serial PRIMARY KEY not null,
+        student_id INTEGER REFERENCES student(id),
+        course_id INTEGER REFERENCES course(id)
         );
     """)
     conn.commit()
@@ -106,14 +108,15 @@ def create_db():
 # Функция очистки от таблиц
 def delete_db():
     cur.execute("""
+         DROP TABLE Course_name;
          DROP TABLE Student;
          DROP TABLE Course;
-         DROP TABLE Course_name;
      """)
     conn.commit()
 
 
 if __name__ == '__main__':
+    delete_db()
     create_db()
     add_student(student_1)
     add_student(student_2)
