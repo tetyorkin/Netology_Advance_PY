@@ -1,5 +1,6 @@
-import psycopg2 as pg
 import datetime as dt
+
+import psycopg2 as pg
 
 conn = pg.connect(dbname='netology_db', user='netology_user', password='123456')
 cur = conn.cursor()
@@ -15,6 +16,7 @@ list_student = [
     {'name': 'Саша', 'gpa': 5, 'birth': dt.datetime(2004, 9, 1)}
 ]
 
+
 # Функция добавяет список студентов в таблицу Student и записывает их на id курса
 def add_students(course_id, students):
     for student in students:
@@ -26,28 +28,41 @@ def add_students(course_id, students):
                 values(%s, %s, %s);
         """, (name, gpa, birth))
         conn.commit()
-        cur.execute("""
-                SELECT name
-                FROM Student
-                WHERE name=%s;
-        """, (name,))
 
-        fetch = cur.fetchall()
         cur.execute("""
-                INSERT INTO Course
-                VALUES (%s, %s);
-        """, (course_id, fetch[0]))
+                CREATE TABLE if not exists Course_name(
+                id serial not null,
+                name_course varchar(100),
+                student_name varchar(100) not null
+                );
+        """)
+        conn.commit()
+
+        cur.execute("""
+                        SELECT name
+                        FROM Student
+                        WHERE name=%s;
+                """, (name,))
+        course_name = f'Курс с id - {course_id}'
+        fetch = cur.fetchall()
+        print((course_id, course_name, fetch[0]))
+        cur.execute("""
+                INSERT INTO Course_name
+                VALUES (%s, %s,  %s);
+        """, (course_id, course_name, fetch[0]))
 
         conn.commit()
+
 
 # Функция возвращает именя студентов учащихся на конкретном id курса
 def get_students(course_id):
     cur.execute("""
-                SELECT name 
-                FROM Course
+                SELECT student_name 
+                FROM Course_name
                 WHERE id=%s;
             """, course_id)
     print(cur.fetchall())
+
 
 # Функция возвращает имя студента по его id
 def get_student(student_id):
@@ -81,7 +96,7 @@ def create_db():
         birth timestamp with time zone 
         );
         CREATE TABLE if not exists Course(
-        id serial not null,
+        id serial PRIMARY KEY not null,
         name varchar(100) not null
         );
     """)
@@ -93,11 +108,13 @@ def delete_db():
     cur.execute("""
          DROP TABLE Student;
          DROP TABLE Course;
+         DROP TABLE Course_name;
      """)
     conn.commit()
 
 
 if __name__ == '__main__':
+    delete_db()
     create_db()
     add_student(student_1)
     add_student(student_2)
