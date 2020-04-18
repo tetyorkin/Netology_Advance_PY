@@ -15,10 +15,10 @@ def read_data(csv_file, db):
         reader = csv.DictReader(csvfile)
         list_artist = list(reader)
         new_artist_list = []
-        id = 0
+        id_artist = 0
         for line in list_artist:
-            id += 1
-            artist_list = {'_id': id,
+            id_artist += 1
+            artist_list = {'_id': id_artist,
                            'Исполнитель': line['Исполнитель'],
                            'Цена': float(line['Цена']),
                            'Место': line['Место'],
